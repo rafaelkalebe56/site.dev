@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerenciar Pedidos</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f8fafc; }
+        .badge { padding: 4px 8px; border-radius: 60px; font-size: 0.8rem; }
+        .novo { background: #facc15; color: black; }
+        .respondido { background: #10b981; color: white; }
+        a { text-decoration: none; color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pedidos de Orçamento</h1>
+        <a href="{{ url_for('admin_painel') }}">← Voltar</a>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Tipo</th>
+                <th>Mensagem</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Ação</th>
+            </tr>
+            {% for p in pedidos %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.nome }}</td>
+                <td>{{ p.email }}</td>
+                <td>{{ p.telefone }}</td>
+                <td>{{ p.tipo_site }}</td>
+                <td>{{ p.mensagem }}</td>
+                <td>{{ p.data }}</td>
+                <td><span class="badge {{ p.status }}">{{ p.status }}</span></td>
+                <td>
+                    {% if p.status == 'novo' %}
+                        <a href="{{ url_for('responder_pedido', id=p.id) }}">Marcar respondido</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

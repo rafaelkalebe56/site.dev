@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Projetos</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
+        .projeto { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #e2e8f0; }
+        .acoes a { margin-left: 10px; color: #ef4444; }
+        .btn { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 60px; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Projetos (Portfólio)</h1>
+        <a href="{{ url_for('admin_painel') }}">← Voltar</a>
+        <a href="{{ url_for('novo_projeto') }}" class="btn">➕ Novo Projeto</a>
+        <div style="margin-top:30px;">
+            {% for p in projetos %}
+            <div class="projeto">
+                <div>
+                    <strong>{{ p.titulo }}</strong><br>
+                    {{ p.descricao }}
+                </div>
+                <div class="acoes">
+                    <a href="{{ url_for('excluir_projeto', id=p.id) }}" onclick="return confirm('Tem certeza?')">Excluir</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

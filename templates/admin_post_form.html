@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Novo Post</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 10px; border: 1px solid #ccc; }
+        button { background: #3b82f6; color: white; padding: 10px; border: none; border-radius: 10px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Escrever Post</h1>
+        <form method="POST">
+            <input type="text" name="titulo" placeholder="Título" required>
+            <textarea name="conteudo" placeholder="Conteúdo" rows="10" required></textarea>
+            <input type="text" name="autor" placeholder="Autor (padrão: Rafael)">
+            <button type="submit">Publicar</button>
+        </form>
+        <a href="{{ url_for('admin_blog') }}">Cancelar</a>
+    </div>
+</body>
+</html>

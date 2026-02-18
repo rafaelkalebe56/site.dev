@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rafael Criação de Sites</title>
+    <!-- Fontes e ícones -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        :root {
+            --bg-body: #f8fafc;
+            --text-primary: #1e293b;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --secondary: #10b981;
+            --accent: #8b5cf6;
+            --header-bg: linear-gradient(135deg, #0f172a, #1e293b);
+            --footer-bg: #0f172a;
+        }
+
+        body.dark-mode {
+            --bg-body: #0f172a;
+            --text-primary: #f1f5f9;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --header-bg: linear-gradient(135deg, #020617, #0f172a);
+            --footer-bg: #020617;
+        }
+
+        /* Menu hambúrguer */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(59,130,246,0.5);
+            border: none;
+            transition: 0.3s;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-hover);
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .menu-lateral {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100vh;
+            background: var(--bg-card);
+            box-shadow: -5px 0 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            padding: 80px 20px 30px;
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            overflow-y: auto;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .menu-lateral.aberto {
+            right: 0;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .menu-lateral ul {
+            list-style: none;
+            margin-top: 40px;
+        }
+
+        .menu-lateral li {
+            margin-bottom: 25px;
+        }
+
+        .menu-lateral a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .menu-lateral a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .menu-lateral i {
+            width: 30px;
+            color: var(--primary);
+        }
+
+        .menu-lateral a:hover i {
+            color: white;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.ativo {
+            display: block;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            background: var(--header-bg);
+            color: white;
+            padding: 80px 0 60px;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 30px 40px -20px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .subhead {
+            font-size: 1.6rem;
+            color: #cbd5e1;
+            margin: 20px 0;
+        }
+
+        .price-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 35px;
+            border-radius: 60px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #facc15;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin: 20px 0;
+        }
+
+        .btn-whatsapp {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #25d366;
+            color: white;
+            padding: 18px 40px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.3rem;
+            box-shadow: 0 15px 25px rgba(37,211,102,0.3);
+            transition: 0.3s;
+        }
+
+        .btn-whatsapp:hover {
+            background: #20b359;
+            transform: scale(1.05) translateY(-3px);
+        }
+
+        /* Seções */
+        section {
+            background: var(--bg-card);
+            border-radius: 40px;
+            padding: 60px 40px;
+            margin: 40px 0;
+            box-shadow: 0 30px 50px -20px rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
+            transition: background 0.3s;
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 80px;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+        }
+
+        /* Formulário de orçamento */
+        .form-orcamento {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            background: var(--bg-body);
+            padding: 40px;
+            border-radius: 30px;
+            margin-top: 30px;
+        }
+
+        .form-orcamento input,
+        .form-orcamento select,
+        .form-orcamento textarea {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .form-orcamento input:focus,
+        .form-orcamento select:focus,
+        .form-orcamento textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.2);
+        }
+
+        .form-orcamento textarea {
+            grid-column: span 2;
+            resize: vertical;
+        }
+
+        .form-orcamento button {
+            grid-column: span 2;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .form-orcamento button:hover {
+            background: var(--primary-hover);
+            transform: scale(1.02);
+        }
+
+        /* Em breve */
+        .em-breve {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 50px;
+            border-radius: 40px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Área do cliente com feedback */
+        .cliente-area {
+            background: var(--bg-card);
+            border: 2px solid var(--primary);
+        }
+
+        .feedback-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+
+        .feedback-form input,
+        .feedback-form textarea {
+            padding: 15px;
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-body);
+            color: var(--text-primary);
+        }
+
+        .feedback-form button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 60px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Lista de feedbacks aprovados */
+        .feedbacks-lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feedback-item {
+            background: var(--bg-body);
+            padding: 20px;
+            border-radius: 20px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .feedback-item .nome {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .feedback-item .estrelas {
+            color: #facc15;
+        }
+
+        /* Projetos (portfólio) */
+        .projetos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .projeto-card {
+            background: var(--bg-body);
+            border-radius: 30px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .projeto-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.2);
+        }
+
+        .projeto-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .projeto-info {
+            padding: 20px;
+        }
+
+        .projeto-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .projeto-info a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* FAQ */
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+        }
+
+        .faq-pergunta {
+            font-weight: 600;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-resposta {
+            margin-top: 15px;
+            color: var(--text-primary);
+            opacity: 0.8;
+            display: none;
+        }
+
+        .faq-resposta.ativa {
+            display: block;
+        }
+
+        /* Simulador de preço */
+        .calculadora {
+            background: var(--bg-body);
+            padding: 40px;
+            border-radius: 30px;
+            margin-top: 30px;
+        }
+
+        .calc-item {
+            margin: 20px 0;
+        }
+
+        .calc-item label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .calc-item input[type="range"] {
+            width: 100%;
+        }
+
+        #precoTotal {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        /* Compartilhamento */
+        .compartilhar {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .compartilhar a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 2rem;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .compartilhar a:hover {
+            transform: translateY(-5px) scale(1.1);
+        }
+
+        /* Newsletter */
+        .newsletter {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 60px;
+            border-radius: 40px;
+            text-align: center;
+        }
+
+        .newsletter-input {
+            display: flex;
+            max-width: 500px;
+            margin: 30px auto;
+        }
+
+        .newsletter-input input {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 60px 0 0 60px;
+            font-size: 1rem;
+        }
+
+        .newsletter-input button {
+            padding: 18px 30px;
+            border: none;
+            background: #0f172a;
+            color: white;
+            border-radius: 0 60px 60px 0;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Botão voltar ao topo */
+        #btnTopo {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--primary);
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 99;
+        }
+
+        #btnTopo.mostrar {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Botão modo escuro */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 99;
+        }
+
+        /* Rodapé */
+        footer {
+            background: var(--footer-bg);
+            color: white;
+            text-align: center;
+            padding: 40px;
+            border-radius: 40px 40px 0 0;
+            margin-top: 80px;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Blog */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .blog-post {
+            background: var(--bg-body);
+            padding: 25px;
+            border-radius: 25px;
+        }
+
+        .blog-post h3 {
+            margin-bottom: 10px;
+        }
+
+        .blog-post .data {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            opacity: 0.7;
+        }
+
+        /* Animações scroll */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: 0.8s;
+        }
+
+        .fade-in.visivel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.5rem; }
+            .form-orcamento { grid-template-columns: 1fr; }
+            .form-orcamento textarea,
+            .form-orcamento button { grid-column: span 1; }
+            h2 { font-size: 2rem; }
+            .menu-lateral { width: 260px; }
+            .newsletter { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botão menu hambúrguer -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Menu lateral -->
+    <div class="menu-lateral" id="menuLateral">
+        <div class="close-menu" id="closeMenu">
+            <i class="fas fa-times"></i>
+        </div>
+        <ul>
+            <li><a href="#inicio"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="#servicos"><i class="fas fa-code"></i> Serviços</a></li>
+            <li><a href="#orcamento"><i class="fas fa-file-invoice"></i> Orçamento</a></li>
+            <li><a href="#faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="#cliente"><i class="fas fa-user"></i> Área do Cliente</a></li>
+            <li><a href="#contato"><i class="fas fa-envelope"></i> Contato</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Botão voltar ao topo -->
+    <button id="btnTopo" title="Voltar ao topo"><i class="fas fa-arrow-up"></i></button>
+    
+    <!-- Botão modo escuro -->
+    <button class="dark-mode-toggle" id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Conteúdo principal -->
+    <div class="container">
+        <!-- Header -->
+        <header id="inicio">
+            <h1>Rafael<br>Criação de Sites</h1>
+            <p class="subhead">Sites modernos e profissionais para pequenos negócios</p>
+            <div class="price-tag">A partir de R$25</div>
+            <a href="https://wa.me/553172495874?text=Olá!%20Vi%20seu%20site%20e%20quero%20saber%20mais." class="btn-whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i> Quero meu site
+            </a>
+        </header>
+
+        <!-- Serviços -->
+        <section id="servicos" class="fade-in">
+            <h2>Serviços</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 30px;">
+                <div class="servico-card" style="background: var(--bg-body); padding: 40px; border-radius: 30px;">
+                    <h3>Site Simples</h3>
+                    <div class="preco" style="font-size: 2.5rem; color: var(--primary);">R$ <25div>
+                    <ul style="list-style: none; margin-top: 20px;">
+                        <li><i class="fas fa-check" style="color: var(--secondary);"></i> 1 página</li>
+                        <li><i class="fas fa-check" style="color: var(--secondary);"></i> Informações básicas</li>
+                        <li><i class="fas fa-check" style="color: var(--secondary);"></i> Botão WhatsApp</li>
+                    </ul>
+                </div>
+                <div class="servico-card" style="background: var(--bg-body); padding: 40px; border-radius: 30px;">
+                    <h3>Site Profissional</h3>
+                    <div class="preco" style="font-size: 2.5rem; color: var(--primary);">R$ 55</div>
+                    <ul style="list-style: none; margin-top: 20px;">
+                        <li><i class="fas fa-check" style="color: var(--secondary);"></i> 3 a 5 páginas</li>
+                        <li><i class="fas fa-check" style="color: var(--secondary);"></i> Design exclusivo</li>
+                        <li><i class="fas fa-check" style="color: var(--secondary);"></i> Galeria de fotos</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formulário de orçamento detalhado -->
+        <section id="orcamento" class="fade-in">
+            <h2>Solicite um orçamento</h2>
+            <form class="form-orcamento" id="formOrcamento" action="/api/pedido" method="POST">
+                <input type="text" name="nome" placeholder="Seu nome completo" required>
+                <input type="email" name="email" placeholder="Seu e-mail" required>
+                <input type="tel" name="telefone" placeholder="WhatsApp com DDD" required>
+                <select name="tipo_site" required>
+                    <option value="">Tipo de site</option>
+                    <option value="Site Simples">Site Simples (R$25)</option>
+                    <option value="Site Profissional">Site Profissional (R$55)</option>
+                    <option value="Site com Loja">Site com Loja Virtual</option>
+                </select>
+                <textarea name="mensagem" rows="5" placeholder="Conte mais sobre o que você precisa..."></textarea>
+                <button type="submit">Enviar pedido de orçamento</button>
+            </form>
+        </section>
+
+        <!-- Seção "Em breve" -->
+        <section class="em-breve fade-in">
+            🚀 Em breve: novidades incríveis! Fique ligado.
+        </section>
+
+        <!-- Área do cliente com feedback e lista de feedbacks aprovados -->
+        <section id="cliente" class="cliente-area fade-in">
+            <h2>Área do Cliente</h2>
+            <p style="text-align: center; margin-bottom: 30px;">Compartilhe sua opinião e veja o que outros clientes dizem.</p>
+            
+            <div class="feedback-form">
+                <h3>Deixe seu feedback</h3>
+                <form id="formFeedback" action="/api/feedback" method="POST">
+                    <input type="text" name="nome" placeholder="Seu nome" required>
+                    <textarea name="feedback" rows="4" placeholder="Conte como foi sua experiência..." required></textarea>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <span style="font-size: 2rem; color: #facc15;" id="estrelasFeedback">
+                            <i class="far fa-star" data-value="1"></i>
+                            <i class="far fa-star" data-value="2"></i>
+                            <i class="far fa-star" data-value="3"></i>
+                            <i class="far fa-star" data-value="4"></i>
+                            <i class="far fa-star" data-value="5"></i>
+                        </span>
+                        <input type="hidden" name="estrelas" id="estrelasInput" value="5">
+                    </div>
+                    <button type="submit">Enviar feedback</button>
+                </form>
+            </div>
+
+            <div id="feedbacksAprovados" class="feedbacks-lista">
+                <!-- Feedbacks serão carregados aqui via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Portfólio (projetos) -->
+        <section id="portfolio" class="fade-in">
+            <h2>Projetos recentes</h2>
+            <div id="projetosLista" class="projetos-grid">
+                <!-- Projetos serão carregados via JavaScript -->
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="fade-in">
+            <h2>Perguntas Frequentes</h2>
+            <div class="faq-item">
+                <div class="faq-pergunta">Como funciona o pagamento? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-resposta">50% no início e 50% na entrega. Aceitamos Pix.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-pergunta">Quanto tempo demora? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-resposta">Site simples: 3 dias. Completo: 7 dias.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-pergunta">O que está incluso no suporte? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-resposta">Manutenção mensal com atualizações de conteúdo e backup.</div>
+            </div>
+        </section>
+
+        <!-- Simulador de preço (orçamento automático) -->
+        <section class="fade-in">
+            <h2>Simulador de preço</h2>
+            <div class="calculadora">
+                <div class="calc-item">
+                    <label>Número de páginas: <span id="numPaginas">1</span></label>
+                    <input type="range" id="paginasRange" min="1" max="10" value="1">
+                </div>
+                <div class="calc-item">
+                    <label><input type="checkbox" id="whatsappCheck" checked> Integração com WhatsApp</label>
+                </div>
+                <div class="calc-item">
+                    <label><input type="checkbox" id="designCheck"> Design exclusivo</label>
+                </div>
+                <div id="precoTotal">R$ 25</div>
+            </div>
+        </section>
+
+        <!-- Blog -->
+        <section class="fade-in">
+            <h2>Últimas do blog</h2>
+            <div id="blogPosts" class="blog-grid">
+                <!-- Posts serão carregados via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Compartilhamento -->
+        <div class="compartilhar">
+            <a href="https://wa.me/?text=Conheça%20o%20site%20do%20Rafael%20para%20criação%20de%20sites!" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.instagram.com/rafael.sites" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=http://meusite.com" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://twitter.com/intent/tweet?text=Confira%20os%20serviços%20do%20Rafael%20para%20criação%20de%20sites!" target="_blank"><i class="fab fa-twitter"></i></a>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter fade-in">
+            <h3>Receba dicas e novidades</h3>
+            <div class="newsletter-input">
+                <input type="email" id="emailNews" placeholder="Seu melhor e-mail">
+                <button onclick="alert('Funcionalidade em breve! Por enquanto, assine pelo WhatsApp.')">Assinar</button>
+            </div>
+        </div>
+
+        <!-- Contato -->
+        <section id="contato" class="fade-in">
+            <h2>Contato</h2>
+            <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/553172495874" target="_blank">(31) 7249-5874</a></p>
+            <p><i class="far fa-envelope"></i> rafaelkalebe56@gmail.com</p>
+            <p><i class="fab fa-instagram"></i> <a href="https://instagram.com/rafael.sites" target="_blank">@rafael.sites</a></p>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 Rafael - Criação de Sites. Todos os direitos reservados.</p>
+        <p>Desenvolvido com 💙 para você.</p>
+    </footer>
+
+    <!-- Código do Tawk.to (chat) -->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/69954d2a07ca921c368c47a2/1jhnjartk';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+
+    <script>
+        // Menu hambúrguer
+        const menuToggle = document.getElementById('menuToggle');
+        const menuLateral = document.getElementById('menuLateral');
+        const closeMenu = document.getElementById('closeMenu');
+        const overlay = document.getElementById('overlay');
+
+        function abrirMenu() {
+            menuLateral.classList.add('aberto');
+            overlay.classList.add('ativo');
+        }
+
+        function fecharMenu() {
+            menuLateral.classList.remove('aberto');
+            overlay.classList.remove('ativo');
+        }
+
+        menuToggle.addEventListener('click', abrirMenu);
+        closeMenu.addEventListener('click', fecharMenu);
+        overlay.addEventListener('click', fecharMenu);
+
+        // FAQ
+        document.querySelectorAll('.faq-pergunta').forEach(pergunta => {
+            pergunta.addEventListener('click', () => {
+                const resposta = pergunta.nextElementSibling;
+                resposta.classList.toggle('ativa');
+                const icone = pergunta.querySelector('i');
+                icone.classList.toggle('fa-chevron-down');
+                icone.classList.toggle('fa-chevron-up');
+            });
+        });
+
+        // Botão voltar ao topo
+        const btnTopo = document.getElementById('btnTopo');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                btnTopo.classList.add('mostrar');
+            } else {
+                btnTopo.classList.remove('mostrar');
+            }
+        });
+        btnTopo.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Modo escuro
+        const darkToggle = document.getElementById('darkModeToggle');
+        darkToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = darkToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Simulador de preço
+        const paginasRange = document.getElementById('paginasRange');
+        const spanPaginas = document.getElementById('numPaginas');
+        const precoTotal = document.getElementById('precoTotal');
+        const whatsappCheck = document.getElementById('whatsappCheck');
+        const designCheck = document.getElementById('designCheck');
+
+        function calcularPreco() {
+            let paginas = parseInt(paginasRange.value);
+            spanPaginas.textContent = paginas;
+            let preco = 25 + (paginas - 1) * 15;
+            if (whatsappCheck.checked) preco += 10;
+            if (designCheck.checked) preco += 30;
+            precoTotal.textContent = 'R$ ' + preco;
+        }
+
+        paginasRange.addEventListener('input', calcularPreco);
+        whatsappCheck.addEventListener('change', calcularPreco);
+        designCheck.addEventListener('change', calcularPreco);
+        calcularPreco();
+
+        // Avaliação por estrelas no feedback
+        const estrelasFeedback = document.querySelectorAll('#estrelasFeedback i');
+        const estrelasInput = document.getElementById('estrelasInput');
+        estrelasFeedback.forEach(estrela => {
+            estrela.addEventListener('click', () => {
+                const valor = estrela.dataset.value;
+                estrelasFeedback.forEach(e => {
+                    e.classList.remove('fas');
+                    e.classList.add('far');
+                });
+                for (let i = 0; i < valor; i++) {
+                    estrelasFeedback[i].classList.remove('far');
+                    estrelasFeedback[i].classList.add('fas');
+                }
+                estrelasInput.value = valor;
+            });
+        });
+
+        // Interceptar formulários para enviar via fetch (sem recarregar)
+        document.getElementById('formOrcamento').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const data = new FormData(form);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new URLSearchParams(data)
+            });
+            if (response.ok) {
+                alert('Pedido enviado com sucesso! Em breve entraremos em contato.');
+                form.reset();
+            } else {
+                alert('Erro ao enviar. Tente novamente.');
+            }
+        });
+
+        document.getElementById('formFeedback').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const data = new FormData(form);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new URLSearchParams(data)
+            });
+            if (response.ok) {
+                alert('Feedback enviado! Obrigado.');
+                form.reset();
+                // Resetar estrelas
+                estrelasFeedback.forEach(e => {
+                    e.classList.remove('fas');
+                    e.classList.add('far');
+                });
+                estrelasInput.value = '5';
+            } else {
+                alert('Erro ao enviar feedback.');
+            }
+        });
+
+        // Carregar feedbacks aprovados
+        async function carregarFeedbacks() {
+            const res = await fetch('/api/feedbacks-aprovados');
+            const data = await res.json();
+            const container = document.getElementById('feedbacksAprovados');
+            container.innerHTML = '';
+            data.feedbacks.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'feedback-item';
+                div.innerHTML = `
+                    <div class="nome">${f.nome_cliente}</div>
+                    <div class="estrelas">${'⭐'.repeat(f.estrelas)}</div>
+                    <p>${f.feedback}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Carregar projetos
+        async function carregarProjetos() {
+            const res = await fetch('/api/projetos');
+            const data = await res.json();
+            const container = document.getElementById('projetosLista');
+            container.innerHTML = '';
+            data.projetos.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'projeto-card';
+                div.innerHTML = `
+                    <img src="${p.imagem_url || 'https://via.placeholder.com/300x200'}" alt="${p.titulo}">
+                    <div class="projeto-info">
+                        <h3>${p.titulo}</h3>
+                        <p>${p.descricao}</p>
+                        ${p.link ? `<a href="${p.link}" target="_blank">Ver site</a>` : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Carregar blog posts
+        async function carregarBlog() {
+            const res = await fetch('/api/blog');
+            const data = await res.json();
+            const container = document.getElementById('blogPosts');
+            container.innerHTML = '';
+            data.posts.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'blog-post';
+                div.innerHTML = `
+                    <h3>${p.titulo}</h3>
+                    <div class="data">${new Date(p.data_publicacao).toLocaleDateString()}</div>
+                    <p>${p.conteudo.substring(0, 100)}...</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Chamar funções ao carregar a página
+        carregarFeedbacks();
+        carregarProjetos();
+        carregarBlog();
+
+        // Scroll reveal (animações)
+        const faders = document.querySelectorAll('.fade-in');
+        const appearOptions = { threshold: 0.3, rootMargin: '0px 0px -50px 0px' };
+        const appearOnScroll = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visivel');
+                }
+            });
+        }, appearOptions);
+        faders.forEach(fader => appearOnScroll.observe(fader));
+    </script>
+</body>
+</html>

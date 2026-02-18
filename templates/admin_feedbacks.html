@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedbacks</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        .aprovado { color: #10b981; }
+        .nao-aprovado { color: #facc15; }
+        a { text-decoration: none; color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Feedbacks</h1>
+        <a href="{{ url_for('admin_painel') }}">← Voltar</a>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Feedback</th>
+                <th>Estrelas</th>
+                <th>Data</th>
+                <th>Aprovado</th>
+                <th>Ação</th>
+            </tr>
+            {% for f in feedbacks %}
+            <tr>
+                <td>{{ f.id }}</td>
+                <td>{{ f.nome_cliente }}</td>
+                <td>{{ f.feedback }}</td>
+                <td>{{ f.estrelas }}⭐</td>
+                <td>{{ f.data }}</td>
+                <td>{{ '✅' if f.aprovado else '⏳' }}</td>
+                <td>
+                    {% if not f.aprovado %}
+                        <a href="{{ url_for('aprovar_feedback', id=f.id) }}">Aprovar</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
