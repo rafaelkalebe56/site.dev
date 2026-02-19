@@ -1,47 +1,237 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Feedbacks</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedbacks - Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
-        .aprovado { color: #10b981; }
-        .nao-aprovado { color: #facc15; }
-        a { text-decoration: none; color: #3b82f6; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .header a {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 60px;
+            transition: 0.3s;
+        }
+        .header a:hover {
+            background: #3b82f6;
+        }
+        .card {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 15px 10px;
+            background: #f8fafc;
+            color: #334155;
+            font-weight: 600;
+        }
+        td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-aprovado {
+            background: #10b981;
+            color: white;
+        }
+        .status-pendente {
+            background: #facc15;
+            color: #1e293b;
+        }
+        .btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-aprovar {
+            background: #10b981;
+            color: white;
+        }
+        .btn-aprovar:hover {
+            background: #059669;
+        }
+        .btn-aprovar:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-reprovar {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-reprovar:hover {
+            background: #dc2626;
+        }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .mensagem {
+            padding: 12px 20px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .mensagem.sucesso {
+            background: #d1fae5;
+            color: #065f46;
+            display: block;
+        }
+        .mensagem.erro {
+            background: #fee2e2;
+            color: #b91c1c;
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Feedbacks</h1>
-        <a href="{{ url_for('admin_painel') }}">← Voltar</a>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Feedback</th>
-                <th>Estrelas</th>
-                <th>Data</th>
-                <th>Aprovado</th>
-                <th>Ação</th>
-            </tr>
-            {% for f in feedbacks %}
-            <tr>
-                <td>{{ f.id }}</td>
-                <td>{{ f.nome_cliente }}</td>
-                <td>{{ f.feedback }}</td>
-                <td>{{ f.estrelas }}⭐</td>
-                <td>{{ f.data }}</td>
-                <td>{{ '✅' if f.aprovado else '⏳' }}</td>
-                <td>
-                    {% if not f.aprovado %}
-                        <a href="{{ url_for('aprovar_feedback', id=f.id) }}">Aprovar</a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="header">
+            <h1><i class="fas fa-star"></i> Feedbacks de Clientes</h1>
+            <a href="{{ url_for('admin_painel') }}"><i class="fas fa-arrow-left"></i> Voltar</a>
+        </div>
+
+        <div id="mensagem" class="mensagem"></div>
+
+        <div class="card">
+            <table id="tabela-feedbacks">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Feedback</th>
+                        <th>Estrelas</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in feedbacks %}
+                    <tr id="feedback-{{ f.id }}" data-id="{{ f.id }}">
+                        <td>{{ f.id }}</td>
+                        <td>{{ f.nome_cliente }}</td>
+                        <td>{{ f.feedback }}</td>
+                        <td>{{ f.estrelas }}⭐</td>
+                        <td>{{ f.data }}</td>
+                        <td>
+                            <span class="status-badge {% if f.aprovado %}status-aprovado{% else %}status-pendente{% endif %}">
+                                {{ 'Aprovado' if f.aprovado else 'Pendente' }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if not f.aprovado %}
+                                <button class="btn btn-aprovar" onclick="aprovarFeedback({{ f.id }}, this)">
+                                    <i class="fas fa-check"></i> Aprovar
+                                </button>
+                            {% else %}
+                                <span class="status-aprovado" style="background: none; color: #10b981;">✅ Aprovado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <script>
+        async function aprovarFeedback(id, botao) {
+            // Desabilita o botão e mostra loading
+            botao.disabled = true;
+            botao.innerHTML = '<span class="loading"></span> Aprovando...';
+
+            try {
+                const resposta = await fetch(`/admin/feedbacks/aprovar/${id}`, {
+                    method: 'GET', // A rota atual é GET, mas podemos mudar para POST se quiser
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (resposta.ok) {
+                    // Atualiza a linha da tabela
+                    const linha = document.getElementById(`feedback-${id}`);
+                    const celulaStatus = linha.querySelector('td:nth-child(6)');
+                    const celulaAcao = linha.querySelector('td:nth-child(7)');
+
+                    // Atualiza status
+                    celulaStatus.innerHTML = '<span class="status-badge status-aprovado">Aprovado</span>';
+                    // Substitui botão por texto
+                    celulaAcao.innerHTML = '<span style="color: #10b981;">✅ Aprovado</span>';
+
+                    mostraMensagem('Feedback aprovado com sucesso!', 'sucesso');
+                } else {
+                    throw new Error('Erro ao aprovar');
+                }
+            } catch (erro) {
+                console.error(erro);
+                botao.disabled = false;
+                botao.innerHTML = '<i class="fas fa-check"></i> Aprovar';
+                mostraMensagem('Erro ao aprovar feedback. Tente novamente.', 'erro');
+            }
+        }
+
+        function mostraMensagem(texto, tipo) {
+            const div = document.getElementById('mensagem');
+            div.className = `mensagem ${tipo}`;
+            div.textContent = texto;
+            setTimeout(() => {
+                div.className = 'mensagem';
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
